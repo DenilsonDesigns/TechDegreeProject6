@@ -6,6 +6,8 @@ const mainUrl= 'http://shirts4mike.com/shirts.php';
 
 
 
+
+
 //ASYNC/AWAIT METHOD
 async function getData(){
     try{
