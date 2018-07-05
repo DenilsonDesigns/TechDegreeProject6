@@ -1,0 +1,17 @@
+{
+  "name": "scaper",
+  "version": "1.0.0",
+  "description": "web scraper",
+  "main": "scraper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "scraper"
+  ],
+  "author": "Daniel Languiller",
+  "license": "ISC",
+  "dependencies": {
+    "scrape-it": "^5.0.5"
+  }
+}
