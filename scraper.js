@@ -2,6 +2,9 @@ console.log('Initializing...');
 
 const http= require('http');
 const scrapeIt= require('scrape-it');
+const papa= require('papaparse');
+const fs= require('fs');
+
 const mainUrl= 'http://shirts4mike.com/shirts.php';
 const baseUrl= 'http://www.shirts4mike.com/';
 const pageUrls= [];
@@ -22,17 +25,17 @@ async function getData(){
             shirtData.push(pusher.data);
             shirtData[i].url= pageUrls[i];
             shirtData[i].title= shirtData[i].title.slice(9);
+            shirtData[i].time= new Date();
         }
         console.log(shirtData);
-        // 2. function to scrape product pages and get info
-        // const shirtData1= await scrapeShirtPage(pageUrls[0]);
-        // shirtData1.data.url= pageUrls[0];
-        // shirtData.push(shirtData1.data);
-        // shirtData[0].title= shirtData[0].title.slice(9);
-        // console.log(shirtData);
-        
-        
+
         //3. save data from pages to CSV file
+        const csv= papa.unparse(shirtData);
+        console.log(csv);
+        const writeCSV= fs.writeFileSync('test.csv', csv);
+
+ 
+
         //4. save CSV file to folder
 
     }catch(err){
@@ -87,3 +90,10 @@ function scrapeShirtPage(productUrl){
 // console.log(shirts.data.shirts.length);
 // console.log(shirts.data.shirts[0].url);
 // console.log(baseUrl+shirts.data.shirts[0].url);
+
+// 2. function to scrape product pages and get info
+// const shirtData1= await scrapeShirtPage(pageUrls[0]);
+// shirtData1.data.url= pageUrls[0];
+// shirtData.push(shirtData1.data);
+// shirtData[0].title= shirtData[0].title.slice(9);
+// console.log(shirtData);
