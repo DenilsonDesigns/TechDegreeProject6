@@ -3,20 +3,35 @@ console.log('Initializing...');
 const http= require('http');
 const scrapeIt= require('scrape-it');
 const mainUrl= 'http://shirts4mike.com/shirts.php';
-
-
-
-
-
+const baseUrl= 'http://www.shirts4mike.com/';
+const pageUrls= [];
+const shirtData= [];
 //ASYNC/AWAIT METHOD
 async function getData(){
     try{
         //1. function to scrape main url and get product pages
         const shirts= await scrapeMain(mainUrl);
-        console.log(shirts.data.shirts);
-       
-    
-        //2. function to scrape product pages and get info
+        //getting array of product urls
+        for(let i=0; i< shirts.data.shirts.length; i++){
+            pageUrls.push(baseUrl+shirts.data.shirts[i].url);
+        }
+        console.log(pageUrls);
+
+        for(let i=0; i< pageUrls.length; i++){
+            let pusher= await scrapeShirtPage(pageUrls[i]);
+            shirtData.push(pusher.data);
+            shirtData[i].url= pageUrls[i];
+            shirtData[i].title= shirtData[i].title.slice(9);
+        }
+        console.log(shirtData);
+        // 2. function to scrape product pages and get info
+        // const shirtData1= await scrapeShirtPage(pageUrls[0]);
+        // shirtData1.data.url= pageUrls[0];
+        // shirtData.push(shirtData1.data);
+        // shirtData[0].title= shirtData[0].title.slice(9);
+        // console.log(shirtData);
+        
+        
         //3. save data from pages to CSV file
         //4. save CSV file to folder
 
@@ -29,7 +44,7 @@ async function getData(){
 getData();
 
 
-//HELPER FUNCTION******
+//HELPER FUNCTIONS******
 //this gets the url endings for each product page
 function scrapeMain(url){
     return new Promise((resolve, reject)=>{
@@ -49,19 +64,26 @@ function scrapeMain(url){
     });
 }
 
+//scraping individ. pages
+function scrapeShirtPage(productUrl){
+    return new Promise((resolve, reject)=>{
+        let shirtsData=
+        scrapeIt(productUrl, {
+            title: ".breadcrumb",
+            price: ".price",
+            imageUrl:{
+                selector: "img",
+                attr: "src",
+            },
+        });
+        resolve(shirtsData);
+        reject(new Error('Failed scraping individual pages'));
+    });
+}
 
-//**************************************************************** */
-//this works to get title and price
-//need above function to correctly get url's of each shirt
-// scrapeIt('http://shirts4mike.com/'+urlToScrape, {
-//         title: ".breadcrumb",
-//         price: ".price",
-//         // ImageURL: 
-//         // URL: 
-//         // time: 
-//     }
-// )
-// .then(({data, response}) => {
-//         console.log(`Status Code: ${response.statusCode}`)
-//         console.log(shirtsData);
-//     })
+
+
+//*******MISC
+// console.log(shirts.data.shirts.length);
+// console.log(shirts.data.shirts[0].url);
+// console.log(baseUrl+shirts.data.shirts[0].url);
