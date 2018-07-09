@@ -4,6 +4,8 @@ const http= require('http');
 const scrapeIt= require('scrape-it');
 const papa= require('papaparse');
 const fs= require('fs');
+const baseDate= new Date();
+const csvFileName= baseDate.toISOString().slice(0,10);
 
 const mainUrl= 'http://shirts4mike.com/shirts.php';
 const baseUrl= 'http://www.shirts4mike.com/';
@@ -25,18 +27,17 @@ async function getData(){
             shirtData.push(pusher.data);
             shirtData[i].url= pageUrls[i];
             shirtData[i].title= shirtData[i].title.slice(9);
-            shirtData[i].time= new Date();
+            shirtData[i].time= baseDate.toTimeString();
         }
         console.log(shirtData);
 
         //3. save data from pages to CSV file
         const csv= papa.unparse(shirtData);
         console.log(csv);
-        const writeCSV= fs.writeFileSync('test.csv', csv);
-
- 
-
-        //4. save CSV file to folder
+        if (!fs.existsSync('./data')){
+                fs.mkdirSync('./data');
+            }   
+        const writeCSV= fs.writeFileSync('data/'+csvFileName+'.csv', csv);
 
     }catch(err){
         console.log('Error', err.message);
