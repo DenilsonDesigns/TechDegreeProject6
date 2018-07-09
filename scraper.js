@@ -41,6 +41,9 @@ async function getData(){
 
     }catch(err){
         console.log('Error', err.message);
+        //write this error to a file scraper-error.log
+        fs.writeFileSync('./scraper-error.log', `${baseDate} Unable to retrieve data from https://shirts4mike.com 
+        Error code: ${err.message}`);
     }
 }
 
